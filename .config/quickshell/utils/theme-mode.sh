@@ -37,7 +37,7 @@ DUNST_CONF="$HOME/.config/dunst/dunstrc"
 # Added --no-wallpaper flag so reading_mode can handle its own wallpapers
 [[ "$*" == *"--no-wallpaper"* ]] && NO_WALLPAPER=1 || NO_WALLPAPER=0
 # Create necessary directories if they don't exist
-# mkdir -p "$GTK3_CONF" "$GTK4_CONF" "$(dirname "$STATE_FILE")" "$(dirname "$KITTY_STATE")"
+mkdir -p "$GTK3_CONF" "$GTK4_CONF" "$(dirname "$STATE_FILE")" "$(dirname "$KITTY_STATE")"
 # HELPER FUNCTIONS
 # Make sure GTK3 settings file exists with proper structure
 ensure_gtk3_ini() {
