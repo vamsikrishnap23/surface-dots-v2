@@ -20,11 +20,7 @@ Also, please check out my calendar app: [Evercal](https://github.com/snes19xx/Ev
 - [Cursors](#cursors)
 - [Lockscreens](#lockscreens)
 - [GTK/QT Themes](#themes)
-- [Utilities](#utilities-1)
-- [Recent bug fixes](#recent-bug-fixes)
-- [Credits & acknowledgements](#credits--acknowledgements)
-- [Media sources](#media-sources)
-- [FAQs](#faqs)
+- [Utilities](#utilities)
 
 ---
 
@@ -60,11 +56,11 @@ sudo pacman -S hyprland hypridle hyprlock hyprpicker quickshell awww \
   xdg-utils xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal-kde \
   polkit-gnome sddm networkmanager nm-connection-editor bluez bluez-utils blueman \
   upower webkit2gtk-4.1 \
-  dunst rofi kitty thunar firefox mpv zathura fastfetch starship \
-  qt6ct kvantum papirus-icon-theme qt6-5compat qt6-svg qqc2-desktop-style \
+  dunst kitty thunar firefox mpv zathura fastfetch starship \
+  qt6ct kvantum papirus-icon-theme qt6-5compat qt6-svg qt6-declarative qt6-connectivity qt6-tools qqc2-desktop-style \
   pipewire-pulse libpulse pamixer pavucontrol playerctl brightnessctl \
-  libnotify wl-clipboard grim slurp swappy \
-  vdirsyncer khal curl jq pacman-contrib \
+  libnotify cliphist wl-clipboard grim slurp swappy \
+  vdirsyncer khal curl jq pacman-contrib cmake ninja pkgconf \
   ttf-nerd-fonts-symbols ttf-jetbrains-mono-nerd
 ```
 
@@ -94,6 +90,14 @@ yay -S grimblast-git ttf-google-fonts-git ttf-cm-unicode evercal
 
 A GUI installer is included for installing surface-dots. Full instructions are in [installation.md](.source_codes/installer_src/installation.md) and if you want to learn more about how the installer was written check [installer_readme.md](.source_codes/installer_src/installer_readme.md), sources are in [`.source_codes/installer_src`](./.source_codes/installer_src).
 
+### Compiling the AirPods Plugin Daemon
+The new AirPods plugin integration relies on a highly efficient C++ daemon. You must compile it locally after installation:
+```bash
+cd ~/.config/quickshell/AirpodsPlugin/daemon
+cmake -B build -G Ninja
+cmake --build build
+```
+
 ```bash
 git clone https://github.com/snes19xx/surface-dots
 cd surface-dots
@@ -113,92 +117,22 @@ chmod +x surface-dots-installer
 
 ### Apps
 
-- `SUPER + Q` → terminal (`kitty`)
-- `SUPER + E` → file manager (`thunar`)
-- `SUPER + R` → app drawer (works in both layouts now, see the note below)
-- `SUPER + B` → firefox
-- `SUPER + S` → my custom ocr app (`lens`)
+- `SUPER + RETURN` → terminal (`kitty`)
+- `SUPER + SHIFT + F` → file manager (`nautilus`)
+- `SUPER + SHIFT + B` → browser (`helium-browser`)
+- `SUPER + SHIFT + O` → notes (`obsidian`)
+- `SUPER + SHIFT + C` → editor (`code`)
+- `SUPER + SHIFT + M` → music (`spotify-launcher`)
 - `SUPER + P` → color picker (`hyprpicker -a`)
-
-`SUPER + R` used to need rewiring if you ran the top bar. It doesn't anymore — the
-bind goes to the shell either way, and the shell decides what to open: rofi in topbar
-mode, the wide drawer in taskbar mode. Same key, right launcher.
+- `SUPER + V` → clipboard manager (Quickshell)
+- `SUPER + R` → app drawer (`TopLauncher.qml` or `WideDrawer.qml` depending on mode)
 
 ### Shaders
 
-These live in `shader.lua`, not `hyprland.lua`:
-
-- `SUPER + D` → reading mode
-- `SUPER + N` → night light
-- `ALT + C` → CRT mode
-- `SUPER + ALT + S` → turn every shader off
-
-### Window actions
-
-- `SUPER + SPACE` → toggle hub on or off
-- `SUPER + X` → kill active window
-- `SUPER + F` → toggle floating (simple)
-- `SUPER + ALT + F` → toggle floating **and** set size `900x600` + center
-- `SUPER + L` → float **and** resize to `1440x1080`
-- `SUPER + M` → fullscreen
-- `SUPER + UP` → togglesplit
-- `SUPER + DOWN` → togglesplit
-
-### Exit
-
-- `ALT + F4` → Power menu
-- `SUPER + ALT + F4` → exit Hyprland
-
-### Focus (arrow keys)
-
-- `SUPER + Left/Right` → move focus horizontally
-- `SUPER + SHIFT + Up/Down` → move focus vertically
-
-### Workspaces
-
-- `SUPER + 1..0` → workspace `1..10`
-- `SUPER + SHIFT + 1..0` → move active window to workspace `1..10`
-- `SUPER + mouse wheel` → next/prev workspace
-- `SUPER + G` → toggle group
-- `SUPER+CTRL+LEFT/RIGHT` → move across grouped windows
-
-### Scratchpad (“special workspace”)
-
-- `SUPER + H` → toggle special workspace `magic`
-- `SUPER + SHIFT + S` → move active window to `special:magic`
-
-### Mouse (window move/resize)
-
-- `SUPER + LMB` → move window
-- `SUPER + RMB` → resize window
-
-### Screenshots
-
-- `Print` → Screen snip
-- `SUPER + Print` → Capture screen
-- `SUPER + SHIFT + Print` → Window capture
-- `SUPER + O` → Capture monitor
-
-### Unbound by default
-
-The shell registers a third global, `quickshell:monitorPicker`, which opens the
-Displays panel straight from the desktop. I don't have a key on it because the panel
-also pops up on its own when you plug a monitor in, but if you want one:
-
-```lua
-hl.bind(mod .. " + SHIFT + D", hl.dsp.global("quickshell:monitorPicker"))
-```
-
-</details>
-
----
-
-## Shaders
-
-Shaders are integral part of my setup, I find them fun.
+Shaders are an integral part of my setup, I find them fun.
 
 - All shaders are located at `~/.config/hypr/shaders/`
-- shaders can be accessed and toggled through rofi start menu (only in taskbar mode)
+- Shaders can be accessed and toggled through the wide app drawer (shader tab)
 
 OR:
 
@@ -208,35 +142,30 @@ hyprctl eval 'hl.config({ decoration = { screen_shader = "/<path to shader.glsl>
 
 # To turn off the screen shader, set the screen_shader value to an empty string.
 hyprctl eval 'hl.config({ decoration = { screen_shader = "" } })'
-
 ```
 
-#### Reading Mode
+#### Complex Modes
 
-A shader-based reading mode to mimic an e-ink reader.
+These are integrated heavily into `shader.lua` and modify gaps, borders, Wallpapers, and animations alongside the GLSL shader:
 
-- Toggle with `SUPER + D` or `~/.config/hypr/shaders/reading_mode.sh`
-- Automatically disables animations, shadows, and blur
-- Custom GLSL shader with e-ink-like color reproduction
-- Warm cream paper tone and soft charcoal blacks for reduced contrast
-- Fine paper grain -like texture
+1. **Reading Mode** (`reading_mode.glsl`) - A shader-based reading mode to mimic an e-ink reader. Disables animations, switches to a warm cream paper tone, and applies a paper-grain texture. (Toggle with `SUPER + D`)
+2. **Night Light** (`night.glsl`) - Main night-light mode shader. (Toggle with `SUPER + N`)
+3. **CRT Mode** (`crt_mode.glsl`) - CRT monitor simulation that thickens borders, toggles a specific wallpaper, and disables shadow/blur. (Toggle with `ALT + C`)
 
-#### Other shaders
+#### Simple Shaders
 
-1. **`main.glsl`** – _main shader to improve my display (activates on startup through hyprland exec)_
-2. **`night.glsl`** – _my main night-light mode shader_ (toggle with `SUPER + N`)
-3. **`outdoor.gls`** – _for maximum outdoor useability_
-4. **`cinema.glsl`** – _for media consumption_
-5. **`amano.glsl`** – _simulates Yoshitaka Amano artstyle_
-6. **`art_canvas.glsl`** – _smulates physical canvas geometry and pigment density_
-7. **`dither.glsl`** – _Simulates 4-bit graphics._
-8. **`fuji_acros.glsl`** – _simulates fujifilm acros_
-9. **`crt_mode.glsl`** – _simulates a crt monitor_
-10. **`vhs.glsl`** – _simulates vhs_
-11. **`gameboy.glsl`** – _simulates a gameboy screen_
-12. **`smart_invert.glsl`** – _eConverts RGB to HSL, inverts the Lightness channel, and converts back_
-13. **`silent_hill.glsl`** – _Pacific Northwest / Silent Hill Shader_
-14. **`greens.glsl`** – _Retains only green hues and desaturates all other colors to grayscale._
+1. **`main.glsl`** – _Main shader to improve display (activates on startup through hyprland exec)_
+2. **`outdoor.glsl`** – _For maximum outdoor usability_
+3. **`cinema.glsl`** – _For media consumption_
+4. **`soft.glsl`** – _Soft image filter_
+5. **`matte.glsl`** – _Matte image filter_
+6. **`IBM5151.glsl`** – _Simulates the classic green phosphor IBM 5151 monochrome monitor_
+7. **`fuji_acros.glsl`** – _Simulates Fujifilm Acros monochrome film_
+8. **`vhs.glsl`** – _Simulates VHS tape distortion and artifacts_
+9. **`gameboy.glsl`** – _Simulates a Gameboy screen_
+10. **`clarity_inefficient.glsl`** – _Clarity enhancement filter_
+11. **`focus.glsl`** – _Focus effect filter_
+12. **`night_vision.glsl`** – _Night vision simulation_
 
 ## Desktop Layouts
 
@@ -281,7 +210,8 @@ As soon as a window opens:
 - ScreenBorders hide
 - The taskbar switches to workspace mode
   - The taskbar in this state behaves similarly to the regular bar used in top-bar mode, except it appears at the bottom of the screen.
-  - The launcher switches from the dock's app drawer (`dock/Drawer.qml`) to the workspace app drawer (`dock/WideDrawer.qml`). This is a custom quickshell app + shader launcher that replaces my rofi setup, toggled with `SUPER + R`.
+  - The launcher switches from the dock's app drawer (`dock/Drawer.qml`) to the workspace app drawer (`dock/WideDrawer.qml`). This is a custom quickshell app + shader launcher, toggled with `SUPER + R`.
+  - **Top Launcher (`dock/TopLauncher.qml`)**: In top-bar mode, clicking the Arch icon triggers the sleek new center-reveal App Launcher with dynamic shadows.
 
 ##### Other taskbar-specific changes
 
@@ -383,6 +313,7 @@ SUPER + SPACE          →   hub opens (or closes)
    i                   →   internet
    t                   →   bluetooth
    b                   →   battery & system stats
+   v                   →   clipboard manager (not in hub, global SUPER+V)
    Esc                 →   close everything
 ```
 
@@ -397,6 +328,7 @@ SUPER + SPACE          →   hub opens (or closes)
 | `i`   | Internet panel                  | Saved and nearby networks, connect and forget           |
 | `t`   | Bluetooth panel                 | Paired and nearby devices, pair and connect             |
 | `b`   | Battery / system stats card     | Toggles the card in the column, doesn't replace the hub |
+| `v`   | Clipboard Manager               | Globally toggled with `SUPER + V` |
 | `Esc` | Close                           | One press, from anywhere                                |
 
 The panels are mutually exclusive on purpose. Opening settings closes displays, opening
@@ -406,7 +338,8 @@ there's nothing to stack and nothing to back out of.
 A few controls are outside this:
 
 - `ALT + F4` → power menu. It's its own overlay.
-- `SUPER + R` → app drawer. Rofi in topbar mode, the wide drawer in taskbar mode.
+- `SUPER + R` → app drawer (`TopLauncher.qml` in Topbar Mode, `WideDrawer.qml` in Taskbar Mode). 
+- `SUPER + V` → clipboard manager (`ClipboardMenu.qml`). Center-reveal animated clipboard natively piped to `cliphist`.
 - Right-click the Wi-Fi button → the internet panel (same as `i`).
 - Right-click the Bluetooth button → the bluetooth panel (same as `t`).
 - Right-click the performance button → battery health card (same as `b`).
@@ -547,6 +480,16 @@ Binds straight to Quickshell's bluetooth module, no polling.
 > register a bluez agent. Use blueman for those.
 
 ---
+
+---
+
+### AirPods Card (Native Integration)
+
+A fully native Qt-driven AirPods card appears in the hub when your AirPods are connected.
+- Displays Left, Right, and Case battery percentages.
+- Toggles listening modes (ANC, Transparency, Off) directly via Bluetooth.
+- Powered by a highly efficient custom C++ daemon (`AirpodsPlugin/daemon/`) that communicates via dbus and PulseAudio natively without looping/polling.
+- Automatically hides when AirPods disconnect.
 
 ### Buttons and Sliders
 
@@ -757,6 +700,7 @@ quickshell -p ~/.config/quickshell/utils/PowerMenu.qml
 Custom on-screen displays for:
 
 - Volume
+- Microphone volume / mute status
 - Brightness
 - Various system modes (Dark, Light, Reading Mode, etc.)
 
@@ -893,14 +837,11 @@ The installer installs the themes and writes to conf.d automatically based on yo
 
 ### Hyprlock
 
-I have two hyprlock themes that are designed to look exactly like the SDDM themes above:
+The lock screen has been refactored into a single, unified `hyprlock.conf` located directly in `~/.config/hypr/`. It inherits the desktop's styling and dynamic blur for a seamless lock experience.
 
 <div align="center">
     <img src="media/screenshots/hyprlock.png" height=350 alt="screenshot" />
 </div>
-
-- Stellarium hyprlock theme (Astronomy inspired)
-- Pixel hyprlock theme (Android inspired)
 
 ## Utilities
 
@@ -911,133 +852,5 @@ Utilities include the following:
 - `SR4.icm` Color profile for the display of the Surface Laptop 4. Import it in KDE Plasma to get Windows-like color calibration.
 - Fonts I like and use often
 
-## Credits & Acknowledgements
-
-- [Everforest-GTK-Theme](https://github.com/Fausto-Korpsvart/Everforest-GTK-Theme) by Fausto-Korpsvart
-- Topbar mode Rofi themes loosely based on @adi1090x's [type 7](https://github.com/adi1090x/rofi/blob/master/previews/launchers/type-7/5.png)
-- `Pixeldots.qml` in sddm theme based on @mahaveergurjar's [Pixeldots](https://github.com/mahaveergurjar/sddm/tree/pixel)
-- Colors: Modified from https://github.com/sainnhe/everforest
-- VScode theme: Modified from Andrei Lucaci's [Everforest pro theme](https://marketplace.visualstudio.com/items?itemName=AndreiLucaci.everforest-pro)
-- Kvantum theme based on [materia-everforest-kvantum](https://github.com/binEpilo/materia-everforest-kvantum)
-- Dave Hoskins for [Hash without Sine](https://www.shadertoy.com/view/4djSRW)
-- Some svgs are from [https://www.svgrepo.com/](https://www.svgrepo.com/) , I made some myself
-- Thorium: https://thorium.rocks/ for the background visualizations in firefox custom new tab
-- My design inspiration comes mainly from : [Microsoft design](https://microsoft.design/), [Material design](https://m3.material.io/blog/building-with-m3-expressive) and [calla](https://github.com/Stardust-kyun/calla). The typography and UI design used in the installer are my own original work, which I’ve also used in several of my other projects, including my website and the firefox extension.
-- Big thanks to u/NoPsychology143 who gave me a giant list of bugs they encountered and I have attempted to resolve them in this update.
-
-## Media Sources
-
-1. Photo by fffunction studio on [Unsplash](https://unsplash.com/photos/green-trees-near-mountains-during-daytime-IrWgzQ_Y_zg)
-2. Photo by Brian McGowan on [Unsplash](https://unsplash.com/photos/astronaut-in-white-suit-in-grayscale-photography-I0fDR8xtApA)
-3. Photo by Mimicry Hu on [Unsplash](https://unsplash.com/photos/aerial-photography-of-persons-on-plant-field-24tsXm7qGQE)
-4. Photo by Bailey Zindel on [Unsplash](https://unsplash.com/photos/body-of-water-surrounded-by-trees-NRQV-hBF10M)
-5. Photo by Jay Yu on [Unsplash](https://unsplash.com/photos/silhouette-of-trees-under-starry-night-atiSW3NHtUM)
-6. Photo by Ben Dutton on [Unsplash](https://unsplash.com/photos/green-trees-FKrcPEZfoNU)
-7. Photo by Richard Rhee on [Flickr](https://www.flickr.com/photos/rcrhee/15167206848/)
-8. Photo by Cedric Chambaz on [Flickr](https://www.flickr.com/photos/cchambaz/2391578535/in/gallery-195423583@N07-72157720611385337/)
-9. Photo by temo Berishvili on [Unsplash](https://www.pexels.com/photo/herd-of-animals-on-grass-field-near-mountains-1574843/)
-10. Photo by Lucas Pezeta on [Unsplash](https://www.pexels.com/photo/cows-grazing-on-field-2331478/)
-11. Photo by Andreas Strandman on [Unsplash](https://unsplash.com/photos/green-trees-near-body-of-water-during-daytime-sa5kZts9PGA)
-12. All Rofi pictures were pulled from Pinterest; I don’t know the original owners.
-
-#### <span style="color:#a41d1d">[Reuse Note:]</span>
-
-Feel free to copy/steal whatever you want as long as you cite me and more importantly the listed media sources in the credits/references where applicable.
-
-## FAQs
-
-**Q: Will this run on a distro other than Arch Linux?** <br>
-_A: I'm not sure about the installer but as long as you have the dependencies I don't see why it wouldn't._
-
-**Q: Can I use this setup with another compositor or desktop environment?** <br>
-_A: Yes. Most features, including Quickshell, will work correctly (as long as you're on wayland). Shaders are the only exception. However, some features exclusively rely on hyprland's ipcs, for best experience please use with hyprland_
-
-**Q: Why use Flutter for the "Now Playing" widget?** <br>
-_A: It was one of my first projects while learning Flutter, which explains the older dependencies. Behind the Material Design frontend, it is just a standard MPRIS controller._
-
-**Q: How does the face unlock animation work?** <br>
-_A: It assumes the authentication was successful by default. You may need to adjust the timer in `main.qml` to get the timing right for a realistic effect. It does properly recognize authentication failures and timeouts._
-
-**Q: Why are there multiple app drawers (including the top-bar Rofi drawers)?**<br>
-\_A: I am currently experimenting with different designs and layouts. Taskbar mode now has a custom quickshell app + shader drawer (`dock/WideDrawer.qml`) that replaces rofi, moving forward I will only update this.
-
-**Q: I'm updating from an older version and nothing launches. Why?**<br>
-_A: Almost certainly `qs -c task-bar` still in your Hyprland config. There's no `task-bar` config to select anymore, it's just `qs`. Check `hyprland.lua`, `shader.lua` and `scripts/wallpaper.sh`, those are the three places that referenced it._
-
-**Q: I picked a layout in settings, do I need to restart the shell?**<br>
-_A: No._
-
-**Q: How do I enable or disable screen borders?** <br>
-_A: Settings -> Screen borders, where you can also set thickness and color. They're taskbar mode only. `showScreenBorders` in `lib/usersettings.json` if you'd rather not click._
-
-**Q: Components are misaligned in the hub. How do I fix them?** <br>
-_A: You can correct alignment by adding padding (left, right, up, down), adjusting spacing, or using the `translate` function. For example, to move weather in `CalendarWeather` card to the right:_
-
-```qml
-// Right: Weather
-      ColumnLayout {
-        Layout.alignment: Qt.AlignTop | Qt.AlignRight
-        Layout.preferredWidth: 110
-
-        /* increase to move right, decrease (values can be negatives too) to move to the left */
-        transform: Translate { x: 5 }  // <--- add this
-```
-
-**Q: The taskbar is covering windows at the bottom of the screen. How do I fix this?** <br>
-_A: Settings -> Taskbar -> Excl. zone, or increase the gaps in your Hyprland config. It's `taskbarExclusiveZone` in `lib/usersettings.json` and no longer needs a code edit-- the bars moved to `bars/TaskBar.qml` and `bars/TopBar.qml` if you're looking for the old line._
-
-**Q: Can I use the top-bar Rofi on the taskbar, or vice versa?** <br>
-_A: `SUPER + R` goes to the shell now and the shell picks the launcher for the current layout, so you don't have to rewire anything to switch modes. To force one, the branch is in `shell.qml` under the `drawerToggle` shortcut, just swap which side calls rofi and which calls `wideDrawer.toggle()`._
-
-**Q: The theme switcher is not applying my GTK or Qt themes. How do I fix it?** <br>
-_A: First, make sure the script has executable permissions. Next, verify the theme files exist and match the names referenced in the script. Finally, run the script directly from the terminal to check for specific error messages abd fix them one by one._
-
-**Q: The wallpaper panel is empty or won't apply anything. How do I fix it?** <br>
-_A: By default it reads from `~/Pictures/Wallpapers`, set `PAPEL_DIR` if yours live somewhere else. It also needs `awww` running to actually set the wallpaper, and `bin/papel` has to be executable. If you just added new wallpapers, hit the refresh button so it re-scans the folder._
-
-**Q: How do I set my own wallpapers?** <br>
-_A: Make `~/.config/surface-dots/wallpapers.conf` and put your paths in there, don't edit the scripts. `WALLPAPER_DARK` and `WALLPAPER_LIGHT` are the two the theme switcher uses. `WALLPAPER_READING` and `WALLPAPER_CRT` are optional, they give Reading Mode and CRT Mode a wallpaper of their own, and if you leave them out those modes just keep the theme wallpaper._
-
-```bash
-# For Example:
-WALLPAPER_DARK="$HOME/Pictures/Wallpapers/night.jpg"
-WALLPAPER_LIGHT="$HOME/Pictures/Wallpapers/day.jpg"
-WALLPAPER_READING="$HOME/Pictures/Wallpapers/paper.jpg"
-```
-
-**Q: How do I switch the power menu skin?** <br>
-_A: Open the settings panel and go to the power menu section, you can pick between Living Things and Cassini there, and set a custom accent for each one. Works from either layout now._
-
-**Q: Where did the `p` power menu in the hub go?** <br>
-_A: Removed. It was a second, worse power menu living in the hub header doing the same job as `ALT + F4`. There's one now._
-
-**Q: The weather is wrong or not showing up. How do I fix it?** <br>
-_A: Set your key and coordinates in the weather section of the settings panel, or edit `lib/weather.sh` directly. It's OpenWeatherMap, so you need your own free API key from them. You also need `curl` and `jq` installed._
-
-**Q: The weather text shows but the icon is a blank box.** <br>
-_A: Install `ttf-nerd-fonts-symbols`. The condition icons are Nerd Font glyphs. Same fix for any other missing glyph in the bars or hub._
-
-**Q: The performance button flips back to what it was, or does nothing.** <br>
-_A: Working as intended until you opt in. It runs `sudo -n auto-cpufreq --force=…`, and `-n` means sudo won't prompt — so with no sudoers rule the call fails and the button rolls its state back rather than lying to you. Add the drop-in from [the perf button section](#enabling-the-performance-button-auto-cpufreq). It's deliberately not a plain `sudo`: that version fails as an auth failure and feeds `pam_faillock`, which on Arch is shared with hyprlock and sddm, so enough clicks lock you out of your own screen._
-
-**Q: hyprlock is rejecting my correct password.** <br>
-_A: Check `faillock --user "$USER"`. If it lists a pile of `sudo` entries you've tripped `pam_faillock`, which `system-auth` shares between sudo, hyprlock, sddm, su and passwd. `faillock --user "$USER" --reset` clears it, and the default `unlock_time=600` means it also clears itself after 10 minutes. Older copies of these dots caused this through auto-cpufreq; on a current copy, something else on your system is failing auth._
-
-**Q: I changed something in the settings panel but it didn't stick. Why?** <br>
-_A: Most settings are saved through `lib/Configuration.qml`, so make sure it can actually write to its config location. A few components still read their colors from `theme.js` or define them internally, so those bits still need a manual file edit for now._
-
-**Q: How do I add my own shader to the wide app drawer?** <br>
-_A: Drop the `.glsl` in `~/.config/hypr/shaders/`, then add a matching icon in `dock/shader-icons/` (and a light-mode version in `dock/shader-icons/light/`) so it shows up in the drawer's shader tab._
-
-**Q: The hub keys don't do anything.** <br>
-_A: The hub has to have focus, which it does when you open it with `SUPER + SPACE` or by clicking the clock. If you clicked through to a window first, the keystrokes went there._
-
-**Q: Can I change the hub keybinds?** <br>
-_A: They're a `Keys.onPressed` block near the top of `hub/HubWindow.qml`, one `else if` per key. Add or swap letters there._
-
-**Q: Something's off in only one of the two layouts. Where do I look?** <br>
-_A: If it's a card, it's in `hub/top/` for topbar mode or `hub/` for taskbar mode. If it's the bar, `bars/TopBar.qml` or `bars/TaskBar.qml`. Everything else (services, theme, settings, panels) is shared, so a bug there will show up in both._
-
-<div style="text-align:center;">
-  <i>If you have any other questions, please start an issue. I'd be more than happy to answer it for you.</i>
-</div>
+---
+*Original baseline created by snes19xx. Modified and upgraded to V2.*

@@ -212,7 +212,7 @@ pub fn copy_hypr_item(repo_root: &str, item: &str) -> Result<(), InstallError> {
             ErrorCode::HyprShadersFailed,
         ),
         "scripts" => {
-            for sub in &["scripts", "screenshots", "wallpapers"] {
+            for sub in &["scripts", "screenshots", "wallpapers", "modules"] {
                 let src = repo_hypr.join(sub);
                 if !src.is_dir() {
                     continue;
@@ -234,28 +234,14 @@ pub fn copy_hypr_item(repo_root: &str, item: &str) -> Result<(), InstallError> {
 }
 
 /// Install hypridle plus the chosen hyprlock theme.
-pub fn install_hyprlock(repo_root: &str, theme: &str) -> Result<(), InstallError> {
+pub fn install_hyprlock(repo_root: &str, _theme: &str) -> Result<(), InstallError> {
     let home = home_dir()?;
     let repo_hypr = PathBuf::from(repo_root).join(".config/hypr");
     let dest_hypr = home.join(".config/hypr");
 
     copy_file(&repo_hypr.join("hypridle.conf"), &dest_hypr.join("hypridle.conf"), ErrorCode::HyprLockFailed)?;
+    copy_file(&repo_hypr.join("hyprlock.conf"), &dest_hypr.join("hyprlock.conf"), ErrorCode::HyprLockFailed)?;
 
-    let theme_dir = repo_hypr.join("hyprlock").join(theme);
-    if !theme_dir.is_dir() {
-        return Err(InstallError::new(
-            ErrorCode::HyprLockFailed,
-            format!("Hyprlock theme not found: {theme}"),
-            "Pick one of the available lock-screen themes and try again.",
-        ));
-    }
-
-    copy_file(&theme_dir.join("hyprlock.conf"), &dest_hypr.join("hyprlock.conf"), ErrorCode::HyprLockFailed)?;
-
-    let bg = theme_dir.join("background.jpg");
-    if bg.exists() {
-        copy_file(&bg, &dest_hypr.join("background.jpg"), ErrorCode::HyprLockFailed)?;
-    }
     Ok(())
 }
 

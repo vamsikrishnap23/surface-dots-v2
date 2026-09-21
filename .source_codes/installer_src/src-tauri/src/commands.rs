@@ -86,13 +86,10 @@ pub fn copy_config_item(repo_root: String, item: String) -> Result<(), InstallEr
         )
         .inspect_err(|_| { let _ = restore_backup(&dest_config.join("dunst"), "dunst"); }),
 
-        "rofi" => backup_and_install_dir(
-            &repo_config.join("rofi"),
             &dest_config.join("rofi"),
             "rofi",
             ErrorCode::RofiFailed,
         )
-        .inspect_err(|_| { let _ = restore_backup(&dest_config.join("rofi"), "rofi"); }),
 
         "utils" => install_utils(&repo_config, &dest_config, &home),
 
@@ -310,6 +307,25 @@ pub fn finish_setup() {
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .spawn();
+    }
+
+
+    // Compile the AirPods Plugin daemon
+    let airpods_dir = home.join(".config/quickshell/AirpodsPlugin/daemon");
+    if airpods_dir.is_dir() {
+        let _ = Command::new("cmake")
+            .args(["-B", "build", "-G", "Ninja"])
+            .current_dir(&airpods_dir)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
+
+        let _ = Command::new("cmake")
+            .args(["--build", "build"])
+            .current_dir(&airpods_dir)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
     }
 
     let _ = Command::new("notify-send")

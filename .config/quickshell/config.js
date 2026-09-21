@@ -3,7 +3,7 @@
 // hardcoding just for now.
 // empty falls back to the profile.jpg bundled next to shell.qml
 var PROFILE_IMG = ""
-var PROFILE_NAME = "snes"
+var PROFILE_NAME = "vamsi"
 
 var TOP_GAP = 50
 var RIGHT_GAP = 10

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import "../AirpodsPlugin" as Airpods
 
 // Card set for the taskbar: wider panel, calendar and buttons paired across two
 // columns, agenda in its own card.
@@ -64,6 +65,12 @@ ColumnLayout {
         theme: root.theme
         active: root.batteryActive
         onActiveChanged: if (!active && !root.hubVisible) root.batteryDismissed()
+        radius: 10
+    }
+
+    Airpods.AirpodsCard {
+        Layout.fillWidth: true
+        theme: root.theme
         radius: 10
     }
 

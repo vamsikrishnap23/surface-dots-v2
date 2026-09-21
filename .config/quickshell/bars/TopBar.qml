@@ -14,6 +14,7 @@ import "../lib" as Lib
 PanelWindow {
     id: win
     signal requestHubToggle()
+    signal requestLauncherToggle()
 
     anchors { top: true; left: true; right: true }
     height: 40
@@ -201,8 +202,10 @@ PanelWindow {
     // --- ICON MAP ---
     function getIcon(cls) {
         var c = (cls || "").toLowerCase()
+        if (c.includes("whatsapp") || c.includes("hnpfjngllnobngcgfapefoaidbinmjnm")) return "󰖣"
         if (c.includes("firefox") || c.includes("zen") || c.includes("librewolf")) return "󰈹"
-        if (c.includes("chromium") || c.includes("chrome") || c.includes("thorium")) return ""
+
+        if (c.includes("chromium") || c.includes("helium") || c.includes("chrome") || c.includes("thorium")) return ""
         if (c.includes("brave")) return ""
         if (c.includes("qutebrowser")) return "󰖟"
         if (c.includes("kitty")) return "󰄛"
@@ -223,7 +226,7 @@ PanelWindow {
         if (c.includes("telegram")) return ""
         if (c.includes("signal")) return "󰭹"
         if (c.includes("element")) return "󰘨"
-        if (c.includes("whatsapp")) return "󰖣"
+        
         if (c.includes("spotify")) return ""
         if (c.includes("vlc")) return "󰕼"
         if (c.includes("mpv") || c.includes("haruna") || c.includes("strawberry") || c.includes("rhythmbox") || c.includes("totem")) return ""
@@ -331,7 +334,7 @@ PanelWindow {
                     anchors.fill: parent
                     hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
                     onClicked: (mouse) => {
-                        if (mouse.button === Qt.LeftButton) win.det("pkill -x rofi || " + (win.isDarkMode ? "~/.config/rofi/launcher.sh" : "~/.config/rofi/launcher_2.sh"))
+                        if (mouse.button === Qt.LeftButton) win.requestLauncherToggle()
                         else if (mouse.button === Qt.RightButton) theme.toggle()
                     }
                 }
@@ -584,45 +587,7 @@ PanelWindow {
                 }
             }
 
-            // 11. TRAY
-            Rectangle {
-                visible: SystemTray.items.length > 0
-                height: 30
-                width: (SystemTray.items.length * 28) + 12
-                radius: 15
-                color: pal.bg
-                border.width: 1
-                border.color: pal.border
-                Row {
-                    anchors.centerIn: parent; spacing: 8
-                    Repeater {
-                        model: SystemTray.items
-                        Item {
-                            width: 20; height: 20
-                            scale: trayPress.pressed ? 0.94 : (trayPress.containsMouse ? 1.06 : 1.0)
-                            Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.08 } }
-
-                            Rectangle {
-                                anchors.fill: parent
-                                radius: width / 2
-                                color: pal.hoverSpotlight
-                                opacity: trayPress.pressed ? 1.0 : (trayPress.containsMouse ? 0.8 : 0.0)
-                                Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
-                            }
-
-                            Image { anchors.centerIn: parent; width: 16; height: 16; source: modelData.icon }
-                            MouseArea {
-                                id: trayPress
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                onClicked: (mouse) => modelData.activate(mouse.button)
-                                onPressed: (mouse) => { if (mouse.button === Qt.RightButton) modelData.menu.open(this) }
-                            }
-                        }
-                    }
-                }
-            }
+            // 11. TRAY (Removed)
 
             // 12. BATTERY
             TopBarItem {

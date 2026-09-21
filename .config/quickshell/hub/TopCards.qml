@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "top" as Top
+import "../AirpodsPlugin" as Airpods
 
 // Card set for the top bar: single column, in the order the original top-bar
 // hub used. These are that hub's own cards, not the task-bar ones reflowed.
@@ -38,6 +39,12 @@ ColumnLayout {
         active: root.batteryActive
         theme: root.theme
         onActiveChanged: if (!active && !root.hubVisible) root.batteryDismissed()
+    }
+
+    Airpods.AirpodsCard {
+        Layout.fillWidth: true
+        theme: root.theme
+        radius: 12
     }
 
     Top.MediaCard {

@@ -15,7 +15,6 @@ pub enum ErrorCode {
     GtkFailed             = 31,
     KvantumFailed         = 37,
     DunstFailed           = 41,
-    RofiFailed            = 43,
     UtilsFailed           = 47,
     QuickshellFailed      = 53,
     SddmSourceNotFound    = 59,

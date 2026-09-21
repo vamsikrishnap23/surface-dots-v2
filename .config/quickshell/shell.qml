@@ -47,12 +47,13 @@ ShellRoot {
                 }
             }
 
-            // The top bar keeps rofi as its launcher, so the dock drawers stay unused
+            // The top bar uses the custom TopLauncher
             Component {
                 id: topBarComponent
                 Bars.TopBar {
                     screen: v.modelData
                     onRequestHubToggle: v.toggleHub()
+                    onRequestLauncherToggle: topLauncher.toggle()
                 }
             }
 
@@ -102,6 +103,14 @@ ShellRoot {
                 theme: screenTheme
                 screen: v.modelData
             }
+            Lib.MicOSD {
+                theme: screenTheme
+                screen: v.modelData
+            }
+            Lib.ClipboardMenu {
+                id: clipboardMenu
+                theme: screenTheme
+            }
             Lib.VolumeOSD {
                 theme: screenTheme
                 screen: v.modelData
@@ -123,6 +132,11 @@ ShellRoot {
                 launcherHole: v.launcherHole
             }
 
+            Dock.TopLauncher {
+                id: topLauncher
+                theme: screenTheme
+            }
+
             function toggleHub() {
                 if (hubWindow.visible) {
                     // Route through closeAll() so the exit animation plays before hiding
@@ -135,18 +149,21 @@ ShellRoot {
             }
 
             GlobalShortcut {
+                name: "clipboardToggle"
+                description: "Toggle clipboard history"
+                onPressed: clipboardMenu.toggle()
+            }
+            GlobalShortcut {
                 name: "hubToggle"
                 description: "Toggle hub"
                 onPressed: v.toggleHub()
             }
 
-            // rofi is the launcher in top style, so this only binds for the taskbar
             GlobalShortcut {
                 name: "drawerToggle"
                 description: "Toggle app drawer"
                 onPressed: {
-                    if (v.topStyle) Quickshell.execDetached(["bash", "-c",
-                        "pkill -x rofi || ~/.config/rofi/launcher.sh"])
+                    if (v.topStyle) topLauncher.toggle()
                     else wideDrawer.toggle()
                 }
             }
