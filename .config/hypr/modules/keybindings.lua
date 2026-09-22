@@ -34,11 +34,17 @@ hl.bind(mod .. " + UP",   hl.dsp.layout("togglesplit"), { description = "Toggle 
 hl.bind(mod .. " + G",    hl.dsp.group.toggle(), { description = "Toggle window group" })
 
 hl.bind(mod .. " + L", hl.dsp.exec_cmd("hyprlock"), { description = "Lock screen" })
+hl.bind(mod .. " + " .. alt .. " + L", hl.dsp.exec_cmd(scripts .. "/layout_toggle.sh"), { description = "Toggle workspace layout (Dwindle/Scrolling)" })
 
 hl.bind(mod .. " + CTRL + left",  hl.dsp.window.move({ direction = "left" }), { description = "Move window left" })
 hl.bind(mod .. " + CTRL + right", hl.dsp.window.move({ direction = "right" }), { description = "Move window right" })
 hl.bind(mod .. " + CTRL + up",    hl.dsp.window.move({ direction = "up" }), { description = "Move window up" })
 hl.bind(mod .. " + CTRL + down",  hl.dsp.window.move({ direction = "down" }), { description = "Move window down" })
+
+hl.bind(mod .. " + equal",         hl.dsp.window.resize({ x = 20, y = 0, relative = true }), { description = "Resize window right" })
+hl.bind(mod .. " + minus",         hl.dsp.window.resize({ x = -20, y = 0, relative = true }), { description = "Resize window left" })
+hl.bind(mod .. " + SHIFT + equal", hl.dsp.window.resize({ x = 0, y = 20, relative = true }), { description = "Resize window down" })
+hl.bind(mod .. " + SHIFT + minus", hl.dsp.window.resize({ x = 0, y = -20, relative = true }), { description = "Resize window up" })
 
 hl.bind(mod .. " + " .. alt .. " + F4", hl.dsp.exec_cmd("hyprctl dispatch 'hl.dsp.exit()'"), { description = "Exit Hyprland" })
 hl.bind(alt .. " + F4", hl.dsp.exec_cmd("hyprctl layers | grep -q power-menu || quickshell -p ~/.config/quickshell/utils/PowerMenu.qml"), { description = "Show Power Menu" })
