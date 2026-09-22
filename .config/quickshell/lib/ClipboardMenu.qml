@@ -282,7 +282,7 @@ PanelWindow {
                                         if (!root.confirmClear) {
                                             root.confirmClear = true
                                         } else {
-                                            Quickshell.execDetached(["cliphist", "wipe"])
+                                            Quickshell.execDetached(["bash", "-c", "rm -rf ~/.cache/cliphist"])
                                             fullModel.clear()
                                             filteredModel.clear()
                                             root.confirmClear = false
