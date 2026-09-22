@@ -61,6 +61,8 @@ hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd(scripts .. "/audiocontrol.sh d"
 hl.bind("XF86AudioMute",         hl.dsp.exec_cmd(scripts .. "/audiocontrol.sh m"), { description = "Toggle audio mute" })
 hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd(scripts .. "/audiocontrol.sh mi"), { description = "Toggle mic mute" })
 hl.bind("XF86AudioPlay",         hl.dsp.exec_cmd(scripts .. "/mediacontrol.sh"), { description = "Play/Pause media" })
+hl.bind("XF86AudioNext",         hl.dsp.exec_cmd(scripts .. "/mediacontrol.sh n"), { description = "Next track" })
+hl.bind("XF86AudioPrev",         hl.dsp.exec_cmd(scripts .. "/mediacontrol.sh p"), { description = "Previous track" })
 hl.bind("XF86Launch3",           hl.dsp.exec_cmd("rog-control-center"), { description = "Launch ROG Control Center" })
 
 hl.bind("Print",                    hl.dsp.exec_cmd(scripts .. "/screenshot.sh s"), { description = "Snip area" })

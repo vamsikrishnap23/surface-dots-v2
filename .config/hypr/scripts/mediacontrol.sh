@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
-playerctl play-pause
+case $1 in
+    n) playerctl next ;;
+    p) playerctl previous ;;
+    *) playerctl play-pause ;;
+esac
 sleep 0.2  
 
 status=$(playerctl status 2>/dev/null)
