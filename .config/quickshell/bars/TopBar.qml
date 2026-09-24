@@ -261,6 +261,7 @@ PanelWindow {
         if (c.includes ("xdm")) return ""
         if (c.includes ("zathura")) return ""
         if (c.includes ("focuswriter")) return "󱞁"
+        if (c.includes ("onlyoffice")) return ""
         if (c.includes ("lollypop")) return "󰎆"
 
         return ""
@@ -519,41 +520,11 @@ PanelWindow {
             }
 //------------------------------------------------- CENTER -----------------------------------------------------
 
-            // 9. MEDIA & TITLE 
+            // 9. SPACER
             Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 36
-                property var player: Mpris.players.values[0] ?? null
-                property bool isPlaying: player && player.playbackState === MprisPlaybackState.Playing
-                property string trackTitle: player ? player.trackTitle : ""
-                property string trackArtist: player ? player.trackArtist : ""
-
-                Text {
-                    anchors.centerIn: parent
-                    visible: !parent.isPlaying
-                    text: Hyprland.activeToplevel?.title ?? "Desktop"
-                    font.family: theme.iconFont; font.weight: 700; font.pixelSize: 13
-                    color: pal.textPrimary
-                    width: Math.min(implicitWidth, 500)
-                    elide: Text.ElideRight
-                }
-
-                RowLayout {
-                    anchors.centerIn: parent
-                    visible: parent.isPlaying
-                    spacing: 10
-                    Text { text: ""; font.family: theme.iconFont; font.pixelSize: 14; color: pal.accent }
-                    Text {
-                        text: parent.parent.trackTitle + " <font color='" + pal.textSecondary + "'>- " + parent.parent.trackArtist + "</font>"
-                        textFormat: Text.StyledText
-                        font.family: theme.iconFont; font.weight: 700; font.pixelSize: 13
-                        color: pal.textPrimary
-                        Layout.maximumWidth: 350
-                        elide: Text.ElideRight
-                    }
-                }
             }
-
 //----------------------------------------------------------------------------------------RIGHT----------
 
             // 10. UPDATES
@@ -720,6 +691,44 @@ PanelWindow {
                     onEntered: clockShimmerAnim.restart()
                 }
             }
-        }
-    }
-}
+        } // RowLayout
+
+        // ABSOLUTE CENTER OVERLAY
+        //------------------------------------------------- CENTER -----------------------------------------------------
+        
+                    // 9. MEDIA & TITLE 
+                    Item {
+                        anchors.centerIn: parent
+                        height: 36
+                        property var player: Mpris.players.values[0] ?? null
+                        property bool isPlaying: player && player.playbackState === MprisPlaybackState.Playing
+                        property string trackTitle: player ? player.trackTitle : ""
+                        property string trackArtist: player ? player.trackArtist : ""
+        
+                        Text {
+                            anchors.centerIn: parent
+                            visible: !parent.isPlaying
+                            text: Hyprland.activeToplevel?.title ?? "Desktop"
+                            font.family: theme.iconFont; font.weight: 700; font.pixelSize: 13
+                            color: pal.textPrimary
+                            width: Math.min(implicitWidth, 500)
+                            elide: Text.ElideRight
+                        }
+        
+                        RowLayout {
+                            anchors.centerIn: parent
+                            visible: parent.isPlaying
+                            spacing: 10
+                            Text { text: ""; font.family: theme.iconFont; font.pixelSize: 14; color: pal.accent }
+                            Text {
+                                text: parent.parent.trackTitle + " <font color='" + pal.textSecondary + "'>- " + parent.parent.trackArtist + "</font>"
+                                textFormat: Text.StyledText
+                                font.family: theme.iconFont; font.weight: 700; font.pixelSize: 13
+                                color: pal.textPrimary
+                                Layout.maximumWidth: 350
+                                elide: Text.ElideRight
+                            }
+                        }
+                    }
+    } // Rectangle
+} // root
